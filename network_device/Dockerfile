@@ -7,22 +7,19 @@ ENV TZ=Europe/London
 RUN apt-get update -y  && \
     apt-get upgrade -y
 
-# install python/pip
-RUN apt-get install -y python3 \
-    python3-pip \
+# install ssh and netconf
+RUN apt-get install -y openssh-server \
+    netconfd \
     vim
 
-RUN apt-get install -y openssh-server
-
-# install netconf
-RUN python3 -m pip install netconf
-
 # create test user
-RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 test
-RUN  echo 'test:test' | chpasswd
+RUN useradd -rm -d /home/test -s /bin/bash -g root -G sudo -u 1000 test
+RUN echo 'test:test' | chpasswd
+
+# configures ssh for netconf
+RUN printf "Port 22\nPort 830\nSubsystem netconf /usr/sbin/netconf-subsystem" >> /etc/ssh/sshd_config
 
 # start ssh
 RUN service ssh start
 
-# keeps the container running
-CMD ["/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["netconfd"]
