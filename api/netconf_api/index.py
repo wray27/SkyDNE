@@ -1,39 +1,42 @@
 #!/usr/bin/env python3
 import logging
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from ncclient import manager
 
 from .utilities.netconf_server import NetconfServer
 
 app = Flask(__name__)
 
-@app.route("/add")
+def get_device_info():
+    return {
+        'host': request.args.get('host', 'localhost', type=str),
+        'username': request.args.get('username'),
+        'password': request.args.get('password')
+    }
+
+
+@app.route("/add", methods=['POST'])
 def create_interface():
-    logging.basicConfig(level=logging.DEBUG)
-    device = NetconfServer(
-        host='localhost', username='root', password='')
-    return device.create_loopback('lo2', '')
+    device = NetconfServer(**get_device_info())
+    name = request.json.get('name')
+    description  = request.json.get('description')
+    return device.create_loopback(name, description)
 
 
-@app.route("/list")
+@app.route("/list", methods=['GET'])
 def get_interfaces():
-    logging.basicConfig(level=logging.DEBUG)
-    device = NetconfServer(
-        host='localhost', username='root', password='test')
+    device = NetconfServer(**get_device_info())
     return device.list_interfaces()
 
 
-@app.route("/delete")
+@app.route("/delete", methods=['DELETE'])
 def delete_interface():
-    logging.basicConfig(level=logging.DEBUG)
-    device = NetconfServer(
-        host='localhost', username='root', password='test')
-    return device.delete_loopback('test')
+    device = NetconfServer(**get_device_info())
+    interface_name = request.args.get('interface_name')
+    return device.delete_loopback(interface_name)
 
 
-@app.route("/capabilities")
+@app.route("/capabilities", methods=['GET'])
 def get_capabillities():
-    logging.basicConfig(level=logging.DEBUG)
-    device = NetconfServer(
-        host='localhost', username='root', password='test')
+    device = NetconfServer(**get_device_info())
     return jsonify(device.capabilities())

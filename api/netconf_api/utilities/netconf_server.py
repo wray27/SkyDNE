@@ -58,7 +58,7 @@ class NetconfServer():
 
     def create_loopback(self, name, description):
         response = self.manager.edit_config(
-            config=self.create_configuration_xml(name, decription))
+            config=self.create_configuration_xml(name, description))
         return str(response)
 
     def delete_loopback(self, name):
