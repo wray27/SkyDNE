@@ -10,6 +10,7 @@ Jinja2==3.1.2
 lxml==4.8.0
 MarkupSafe==2.1.1
 ncclient==0.6.13
+netconf-client==2.0.1
 paramiko==2.11.0
 pycodestyle==2.8.0
 pycparser==2.21

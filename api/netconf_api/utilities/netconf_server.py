@@ -5,8 +5,6 @@ from datetime import datetime
 import xmltodict
 from lxml import etree
 from ncclient import manager
-from netconf_client.connect import connect_ssh
-from netconf_client.ncclient import Manager
 
 
 class NetconfServer():

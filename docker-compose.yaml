@@ -1,0 +1,20 @@
+
+
+services:
+  network-device:
+    image: network_device
+    container_name: dne
+    build:
+      context: ./network_device
+    ports:
+      - "22:22"
+      - "830:830"
+
+  netconf-api:
+    image: netconf_api
+    container_name: api
+    build:
+      context: ./api
+    ports:
+      - "5000:5000"
+      - "8080:22"

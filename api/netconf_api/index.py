@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+import os
 import logging
+
 from flask import Flask, jsonify, request
 from ncclient import manager
 
-from .utilities.netconf_server import NetconfServer
+from utilities.netconf_server import NetconfServer
 
 app = Flask(__name__)
 
@@ -40,3 +42,8 @@ def delete_interface():
 def get_capabillities():
     device = NetconfServer(**get_device_info())
     return jsonify(device.capabilities())
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get('FLASK_PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
