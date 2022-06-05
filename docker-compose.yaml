@@ -6,9 +6,9 @@ services:
     container_name: dne
     build:
       context: ./network_device
-    ports:
-      - "22:22"
-      - "830:830"
+    expose:
+      - 22
+      - 830
 
   netconf-api:
     image: netconf_api
@@ -18,3 +18,13 @@ services:
     expose:
       - 5000
       - 22
+
+  httpd:
+    image: dne_nginx
+    container_name: nginx
+    build:
+      context: ./nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - netconf_api
