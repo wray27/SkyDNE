@@ -15,7 +15,6 @@ RUN apt-get install -y openssh-server \
 # create test user
 RUN useradd -rm -d /home/test -s /bin/bash -g root -G sudo -u 1000 test
 RUN usermod -G root test
-RUN usermod -g 0 -o
 
 RUN echo 'test:test' | chpasswd
 

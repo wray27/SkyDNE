@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
+
 import os
 import logging
 
-from flask import Flask, jsonify, request
+from flask import Flask, Response, jsonify, request, abort
 from ncclient import manager
 
 from utilities.netconf_server import NetconfServer
@@ -17,12 +18,18 @@ def get_device_info():
     }
 
 
+def require_interface_name(interface_name):
+    if not interface_name:
+        return abort(400, 'interface name is required')
+
+
 @app.route("/add", methods=['POST'])
 def create_interface():
     device = NetconfServer(**get_device_info())
-    name = request.json.get('name')
+    interface_name = request.json.get('name')
+    require_interface_name(interface_name)
     description  = request.json.get('description')
-    return device.create_loopback(name, description)
+    return device.create_loopback(interface_name, description)
 
 
 @app.route("/list", methods=['GET'])
@@ -35,6 +42,7 @@ def get_interfaces():
 def delete_interface():
     device = NetconfServer(**get_device_info())
     interface_name = request.args.get('interface_name')
+    require_interface_name(interface_name)
     return device.delete_loopback(interface_name)
 
 

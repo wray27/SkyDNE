@@ -27,7 +27,7 @@ class NetconfServer():
             </interfaces>
             </filter>"""
         response = self.manager.get_config(source='running', filter=netconf_filter)
-        interfaces = xmltodict.parse(response.xml)
+        interfaces = xmltodict.parse(response.data_xml)
         return interfaces
 
     def create_configuration_xml(self, name: str, description: str):
